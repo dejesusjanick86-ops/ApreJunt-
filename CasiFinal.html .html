@@ -1,0 +1,970 @@
+TYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura de Ahorros - Sistema Integral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        /* Custom styles for a kid-friendly look */
+        .card {
+            @apply bg-white rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl;
+        }
+        .btn {
+            @apply w-full font-bold py-3 px-4 rounded-xl transition-all duration-200 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+        }
+        .action-btn {
+            @apply w-full items-center justify-center py-4 px-6 rounded-full bg-slate-200 text-slate-800 font-semibold transition-colors duration-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed flex;
+        }
+        .btn-primary {
+            @apply bg-yellow-400 text-yellow-900 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 shadow-md;
+        }
+        .btn-secondary {
+            @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50;
+        }
+        .btn-green {
+             @apply bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 shadow-md;
+        }
+        .btn-blue {
+             @apply bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 shadow-md;
+        }
+        .btn-orange {
+             @apply bg-orange-500 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-75 shadow-md;
+        }
+        .btn-purple {
+             @apply bg-purple-500 text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 shadow-md;
+        }
+        .input-field {
+             @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400;
+        }
+        .input-editable {
+            @apply w-24 px-2 py-1 text-right border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500;
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Print styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #receipt-content, #receipt-content * {
+                visibility: visible;
+            }
+            #receipt-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-blue-50 text-gray-800">
+
+    <!-- Login View -->
+    <div id="login-view" class="min-h-screen flex items-center justify-center bg-blue-100 py-12 px-4 sm:px-6 lg:px-8 relative">
+        <!-- Botón Admin -->
+        <button id="admin-btn" class="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" title="Panel de Administración">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+        </button>
+
+        <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-2xl shadow-2xl text-center">
+            <div>
+                <svg class="mx-auto h-20 w-auto text-pink-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5,12.5a1.5,1.5,0,0,0-1.5,1.5v.5a.5.5,0,0,1-.5.5h-1a.5.5,0,0,1-.5-.5v-.5a1.5,1.5,0,0,0-3,0v.5a.5.5,0,0,1-.5.5h-1a.5.5,0,0,1-.5-.5v-.5a1.5,1.5,0,0,0-3,0v.5a.5.5,0,0,1-.5.5h-1a.5.5,0,0,1-.5-.5v-2a.5.5,0,0,1,.5-.5h.5a1.5,1.5,0,0,0,0-3h-.5a.5.5,0,0,1-.5-.5v-2a.5.5,0,0,1,.5-.5h1a1.5,1.5,0,0,0,1.5-1.5V5.5a1.5,1.5,0,0,0-3,0v.5a.5.5,0,0,1-1,0v-.5a3.5,3.5,0,0,1,7,0v.5a.5.5,0,0,1-1,0v-.5a1.5,1.5,0,0,0-1.5-1.5V5a1.5,1.5,0,0,0-1.5-1.5h-1a3.5,3.5,0,0,1,0-7h1A3.5,3.5,0,0,1,14.5,3.5V5a1.5,1.5,0,0,0,3,0V3.5A3.5,3.5,0,0,1,21,7v5.5a1.5,1.5,0,0,0,1.5,1.5h.5a.5.5,0,0,1,.5.5v2a.5.5,0,0,1-.5.5h-.5a1.5,1.5,0,0,0,0,3h.5a.5.5,0,0,1,.5.5v2a.5.5,0,0,1-.5.5h-1a1.5,1.5,0,0,0-1.5,1.5v.5a3.5,3.5,0,0,1-7,0v-.5a1.5,1.5,0,0,0-1.5-1.5h-1a.5.5,0,0,1,0-1h1a1.5,1.5,0,0,0,1.5-1.5v-.5a3.5,3.5,0,0,1,3.5-3.5h1a3.5,3.5,0,0,1,3.5,3.5Z"/></svg>
+                <h2 class="mt-6 text-4xl font-extrabold text-gray-900 text-shadow">¡Tu Aventura de Ahorros!</h2>
+                <p class="mt-2 text-md text-gray-600">Escanea tu tarjeta o ingresa tus datos.</p>
+            </div>
+            <form id="login-form" class="mt-8 space-y-6">
+                <div class="rounded-md shadow-sm space-y-4">
+                    <div>
+                        <label for="login-input" class="sr-only">Usuario o Código</label>
+                        <input id="login-input" name="login-input" type="text" required class="input-field text-center text-lg" placeholder="Usuario o Escanea Tarjeta (AJ...)">
+                    </div>
+                    <div id="password-container" class="hidden">
+                         <label for="login-password" class="sr-only">Contraseña</label>
+                         <input id="login-password" name="login-password" type="password" class="input-field text-center text-lg" placeholder="Contraseña Secreta">
+                    </div>
+                </div>
+                <div id="login-error" class="text-red-500 text-sm h-5"></div>
+                <div><button type="submit" class="btn btn-primary text-lg">¡Entrar!</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login View (Hidden) -->
+    <div id="admin-auth-view" class="hidden min-h-screen flex items-center justify-center bg-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-2xl shadow-2xl text-center">
+            <h2 class="text-3xl font-extrabold text-gray-800">Acceso Administrativo</h2>
+            <p class="text-sm text-gray-500">Solo para padres o maestros</p>
+            <form id="admin-login-form" class="mt-8 space-y-6">
+                <input id="admin-password" type="password" required class="input-field text-center text-lg" placeholder="Contraseña">
+                <div id="admin-error" class="text-red-500 text-sm h-5"></div>
+                <div class="flex gap-4">
+                    <button type="submit" class="btn bg-gray-800 text-white hover:bg-gray-900">Ingresar</button>
+                    <button type="button" id="admin-cancel-btn" class="btn btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard View (Hidden) -->
+    <div id="admin-dashboard-view" class="hidden min-h-screen bg-gray-100">
+        <header class="bg-gray-800 text-white shadow-md">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <h1 class="text-xl font-bold">Panel de Control - Aprejunt</h1>
+                <button id="admin-logout-btn" class="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded">Salir</button>
+            </div>
+        </header>
+        
+        <main class="container mx-auto p-4 md:p-8">
+            
+            <!-- Tools Section -->
+            <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gestión de Usuarios</h2>
+                    <p class="text-gray-600 text-sm">Edita saldos y administra tarjetas.</p>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <button id="export-excel-btn" class="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-bold shadow-sm w-full md:w-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Descargar Excel (Tarjetas)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Create User Section -->
+            <div class="bg-white p-6 rounded-xl shadow-md mb-8 border-l-4 border-blue-500">
+                <h3 class="font-bold text-lg mb-2">Registrar Nuevo Usuario</h3>
+                <form id="admin-add-user-form" class="flex flex-col md:flex-row gap-4 items-end">
+                    <div class="flex-grow w-full">
+                        <label class="text-sm text-gray-600 block mb-1">Nombre del niño/a</label>
+                        <input type="text" id="new-user-name" placeholder="Ej. Juanito Perez" class="input-field py-2" required>
+                    </div>
+                    <div class="w-full md:w-48">
+                        <label class="text-sm text-gray-600 block mb-1">Código Asignado</label>
+                        <input type="text" id="new-user-code" class="input-field py-2 bg-gray-100 text-gray-500 font-mono" readonly value="AJ...">
+                    </div>
+                    <button type="submit" class="btn btn-blue md:w-auto whitespace-nowrap py-2 h-[46px]">Crear Usuario</button>
+                </form>
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-bold">
+                            <tr>
+                                <th class="px-4 py-4 border-b">Código/Folio</th>
+                                <th class="px-4 py-4 border-b">Nombre</th>
+                                <th class="px-4 py-4 border-b text-right text-blue-600">Para Gastar</th>
+                                <th class="px-4 py-4 border-b text-right text-green-600">Guardado</th>
+                                <th class="px-4 py-4 border-b text-right text-purple-600">Invertido</th>
+                                <th class="px-4 py-4 border-b text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-table-body" class="text-sm text-gray-700">
+                            <!-- Rows will be inserted here by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="no-users-msg" class="hidden p-8 text-center text-gray-500">
+                    No hay usuarios registrados todavía.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Main App View -->
+    <div id="app-view" class="hidden">
+        <header class="bg-white shadow-md">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                     <svg class="h-10 w-auto text-pink-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5,12.5a1.5,1.5,0,0,0-1.5,1.5v.5a.5.5,0,0,1-.5.5h-1a.5.5,0,0,1-.5-.5v-.5a1.5,1.5,0,0,0-3,0v.5a.5.5,0,0,1-.5.5h-1a.5.5,0,0,1-.5-.5v-2a.5.5,0,0,1,.5-.5h.5a1.5,1.5,0,0,0,0-3h-.5a.5.5,0,0,1-.5-.5v-2a.5.5,0,0,1,.5-.5h1a1.5,1.5,0,0,0,1.5-1.5V5.5a1.5,1.5,0,0,0-3,0v.5a.5.5,0,0,1-1,0v-.5a3.5,3.5,0,0,1,7,0v.5a.5.5,0,0,1-1,0v-.5a1.5,1.5,0,0,0-1.5-1.5V5a1.5,1.5,0,0,0-1.5-1.5h-1a3.5,3.5,0,0,1,0-7h1A3.5,3.5,0,0,1,14.5,3.5V5a1.5,1.5,0,0,0,3,0V3.5A3.5,3.5,0,0,1,21,7v5.5a1.5,1.5,0,0,0,1.5,1.5h.5a.5.5,0,0,1,.5.5v2a.5.5,0,0,1-.5.5h-.5a1.5,1.5,0,0,0,0,3h.5a.5.5,0,0,1,.5.5v2a.5.5,0,0,1-.5.5h-1a1.5,1.5,0,0,0-1.5,1.5v.5a3.5,3.5,0,0,1-7,0v-.5a1.5,1.5,0,0,0-1.5-1.5h-1a.5.5,0,0,1,0-1h1a1.5,1.5,0,0,0,1.5-1.5v-.5a3.5,3.5,0,0,1,3.5-3.5h1a3.5,3.5,0,0,1,3.5,3.5Z"/></svg>
+                    <h1 class="text-2xl font-extrabold text-gray-800">Aprejunt</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="welcome-message" class="text-gray-600 font-bold"></span>
+                    <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-bold">Salir</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="container mx-auto p-4 md:p-8">
+            <section id="accounts-summary" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- Checking Account -->
+                <div class="card bg-blue-100">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-blue-800">Dinero para Gastar</h2>
+                            <svg class="h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 3a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m14.25 6h-6.5a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5z" /></svg>
+                        </div>
+                        <p class="text-4xl font-extrabold text-gray-900 mt-4" id="checking-balance">$0.00</p>
+                        <p class="text-blue-700 font-semibold">¡Tienes!</p>
+                    </div>
+                </div>
+                <!-- Savings Account -->
+                <div class="card bg-green-100">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-green-800">Tesoro Guardado</h2>
+                            <svg class="h-8 w-8 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+                        </div>
+                        <p class="text-4xl font-extrabold text-gray-900 mt-4" id="savings-balance">$0.00</p>
+                        <p class="text-green-700 font-semibold">¡Tus ahorros!</p>
+                    </div>
+                </div>
+                <!-- Investment Account -->
+                <div id="investment-card" class="card bg-purple-100 cursor-pointer">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-purple-800">Inversión Mágica</h2>
+                            <svg id="investment-icon" class="h-8 w-8 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                        </div>
+                        <p class="text-4xl font-extrabold text-gray-900 mt-4" id="investment-balance">$0.00</p>
+                        <p id="investment-status" class="text-purple-700 font-semibold">¡Haz crecer tu dinero!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="actions-panel" class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+                <h3 class="text-2xl font-bold mb-6 text-center text-gray-700">¿Qué quieres hacer?</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Botón Guardar -->
+                    <button data-action="deposit" class="action-btn">
+                        <span>Guardar</span>
+                    </button>
+                    <!-- Botón Sacar -->
+                    <button data-action="withdraw" class="action-btn">
+                        <span>Sacar</span>
+                    </button>
+                    <!-- Botón Mover -->
+                    <button data-action="transfer" class="action-btn">
+                        <span>Mover</span>
+                    </button>
+                    <!-- Botón Invertir -->
+                    <button id="invest-button" data-action="invest" class="action-btn">
+                        <span>Invertir</span>
+                    </button>
+                </div>
+
+                <div id="transaction-forms" class="mt-6">
+                    <form id="deposit-form" class="hidden space-y-4 p-4 bg-green-50 rounded-lg">
+                        <h4 class="font-bold text-green-800 text-lg">Guardar Dinero</h4>
+                        <div>
+                            <label for="deposit-account" class="block text-sm font-medium text-gray-700">¿Dónde lo guardo?</label>
+                            <select id="deposit-account" class="input-field form-select mt-1">
+                                <option value="checking">Dinero para Gastar</option>
+                                <option value="savings">Tesoro Guardado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="deposit-amount" class="block text-sm font-medium text-gray-700">¿Cuánto?</label>
+                            <input type="number" id="deposit-amount" placeholder="0.00" min="0.01" step="0.01" required class="input-field mt-1">
+                        </div>
+                        <div class="flex gap-4">
+                            <button type="submit" class="btn btn-green flex-1">¡Guardar!</button>
+                            <button type="button" class="btn btn-secondary flex-1 cancel-action">Cancelar</button>
+                        </div>
+                    </form>
+
+                    <form id="withdraw-form" class="hidden space-y-4 p-4 bg-orange-50 rounded-lg">
+                        <h4 class="font-bold text-orange-800 text-lg">Sacar Dinero</h4>
+                        <div>
+                            <label for="withdraw-account" class="block text-sm font-medium text-gray-700">¿De dónde lo saco?</label>
+                            <select id="withdraw-account" class="input-field form-select mt-1">
+                                <option value="checking">Dinero para Gastar</option>
+                                <option value="savings">Tesoro Guardado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="withdraw-amount" class="block text-sm font-medium text-gray-700">¿Cuánto?</label>
+                            <input type="number" id="withdraw-amount" placeholder="0.00" min="0.01" step="0.01" required class="input-field mt-1">
+                        </div>
+                        <div class="flex gap-4">
+                            <button type="submit" class="btn btn-orange flex-1">¡Sacar!</button>
+                            <button type="button" class="btn btn-secondary flex-1 cancel-action">Cancelar</button>
+                        </div>
+                    </form>
+
+                    <form id="transfer-form" class="hidden space-y-4 p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-bold text-blue-800 text-lg">Mover Dinero</h4>
+                        <div>
+                            <label for="transfer-from" class="block text-sm font-medium text-gray-700">Mover desde:</label>
+                            <select id="transfer-from" class="input-field form-select mt-1">
+                                <option value="checking">Dinero para Gastar</option>
+                                <option value="savings">Tesoro Guardado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="transfer-to" class="block text-sm font-medium text-gray-700">Mover hacia:</label>
+                            <select id="transfer-to" class="input-field form-select mt-1" disabled>
+                                <option value="savings">Tesoro Guardado</option>
+                                <option value="checking">Dinero para Gastar</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="transfer-amount" class="block text-sm font-medium text-gray-700">¿Cuánto?</label>
+                            <input type="number" id="transfer-amount" placeholder="0.00" min="0.01" step="0.01" required class="input-field mt-1">
+                        </div>
+                        <div class="flex gap-4">
+                            <button type="submit" class="btn btn-blue flex-1">¡Mover!</button>
+                            <button type="button" class="btn btn-secondary flex-1 cancel-action">Cancelar</button>
+                        </div>
+                    </form>
+
+                    <form id="invest-form" class="hidden space-y-4 p-4 bg-purple-50 rounded-lg">
+                        <h4 class="font-bold text-purple-800 text-lg">Invertir Dinero del Tesoro</h4>
+                        <p class="text-sm text-gray-600">El dinero que inviertas crecerá un 12% pero estará bloqueado hasta que uses el código secreto.</p>
+                        <div>
+                            <label for="invest-amount" class="block text-sm font-medium text-gray-700">¿Cuánto quieres invertir?</label>
+                            <input type="number" id="invest-amount" placeholder="0.00" min="0.01" step="0.01" required class="input-field mt-1">
+                        </div>
+                        <div class="flex gap-4">
+                            <button type="submit" class="btn btn-purple flex-1">¡Invertir!</button>
+                            <button type="button" class="btn btn-secondary flex-1 cancel-action">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <div id="message-area" class="mb-8 text-center text-lg font-bold"></div>
+
+            <section id="transaction-history" class="bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-xl font-bold mb-4">Últimos Movimientos</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Cuándo</th>
+                                <th scope="col" class="px-6 py-3">Qué pasó</th>
+                                <th scope="col" class="px-6 py-3">Cuánto</th>
+                                <th scope="col" class="px-6 py-3">Saldo Final</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Receipt View -->
+    <div id="receipt-view" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div id="receipt-content" class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-gray-800">
+            <h3 class="text-2xl font-extrabold text-center text-pink-500 mb-2">¡Comprobante!</h3>
+            <p class="text-center text-sm text-gray-500 mb-6" id="receipt-date"></p>
+            <div class="space-y-3 border-t border-b border-dashed py-4 my-4">
+                <div class="flex justify-between"><span class="font-bold">Aventurero:</span> <span id="receipt-name"></span></div>
+                <div class="flex justify-between"><span class="font-bold">Operación:</span> <span id="receipt-type" class="font-semibold"></span></div>
+                <div class="flex justify-between"><span class="font-bold">En la cuenta:</span> <span id="receipt-account-name"></span></div>
+                <div class="flex justify-between"><span class="font-bold">No. de Cuenta:</span> <span id="receipt-account-number" class="font-mono"></span></div>
+                <div class="flex justify-between text-lg"><span class="font-bold">Monto:</span> <span id="receipt-amount" class="font-extrabold"></span></div>
+                <div class="flex justify-between"><span class="font-bold">Nuevo Saldo:</span> <span id="receipt-new-balance" class="font-bold"></span></div>
+            </div>
+            <p class="text-xs text-center text-gray-500 mb-6">¡Sigue ahorrando y divirtiértete!</p>
+            <div class="flex flex-col sm:flex-row gap-4 no-print">
+                <button id="print-receipt-button" class="btn btn-primary flex-1">Imprimir</button>
+                <button id="close-receipt-button" class="btn btn-secondary flex-1">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unlock View -->
+    <div id="unlock-view" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-gray-800 text-center">
+            <h3 class="text-2xl font-extrabold text-purple-600 mb-2">¡Desbloquea tu Inversión!</h3>
+            <p class="text-gray-600 mb-4">Ingresa el código secreto para abrir el cofre y recibir tus ganancias.</p>
+            <form id="unlock-form">
+                <input type="password" id="unlock-code" class="input-field text-center text-2xl tracking-[1em] font-bold mb-4" maxlength="4" placeholder="••••">
+                <div id="unlock-error" class="text-red-500 text-sm mb-4 h-5"></div>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="btn btn-purple flex-1">¡Abrir Cofre!</button>
+                    <button id="close-unlock-button" type="button" class="btn btn-secondary flex-1">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const loginView = document.getElementById('login-view');
+            const appView = document.getElementById('app-view');
+            const adminAuthView = document.getElementById('admin-auth-view');
+            const adminDashboardView = document.getElementById('admin-dashboard-view');
+
+            // Login & Auth
+            const loginForm = document.getElementById('login-form');
+            const loginInput = document.getElementById('login-input'); // Campo unificado (Usuario o Código)
+            const loginPassword = document.getElementById('login-password');
+            const passwordContainer = document.getElementById('password-container');
+            const loginError = document.getElementById('login-error');
+            const logoutButton = document.getElementById('logout-button');
+            
+            // Admin Elements
+            const adminBtn = document.getElementById('admin-btn');
+            const adminLoginForm = document.getElementById('admin-login-form');
+            const adminPasswordInput = document.getElementById('admin-password');
+            const adminError = document.getElementById('admin-error');
+            const adminCancelBtn = document.getElementById('admin-cancel-btn');
+            const adminLogoutBtn = document.getElementById('admin-logout-btn');
+            const adminUsersTableBody = document.getElementById('admin-users-table-body');
+            const exportExcelBtn = document.getElementById('export-excel-btn');
+            const adminAddUserForm = document.getElementById('admin-add-user-form');
+            const newUserNameInput = document.getElementById('new-user-name');
+            const newUserCodeInput = document.getElementById('new-user-code');
+            const noUsersMsg = document.getElementById('no-users-msg');
+
+            // Dashboard Elements
+            const welcomeMessage = document.getElementById('welcome-message');
+            const checkingBalanceEl = document.getElementById('checking-balance');
+            const savingsBalanceEl = document.getElementById('savings-balance');
+            const investmentBalanceEl = document.getElementById('investment-balance');
+            const investmentStatusEl = document.getElementById('investment-status');
+            const investmentIcon = document.getElementById('investment-icon');
+            const investmentCard = document.getElementById('investment-card');
+            
+            const actionsPanel = document.getElementById('actions-panel');
+            const depositForm = document.getElementById('deposit-form');
+            const withdrawForm = document.getElementById('withdraw-form');
+            const transferForm = document.getElementById('transfer-form');
+            const investForm = document.getElementById('invest-form');
+            const investButton = document.getElementById('invest-button');
+            const allForms = [depositForm, withdrawForm, transferForm, investForm];
+
+            const messageArea = document.getElementById('message-area');
+            const historyBody = document.getElementById('history-body');
+
+            // Modals
+            const receiptView = document.getElementById('receipt-view');
+            const receiptDate = document.getElementById('receipt-date');
+            const receiptName = document.getElementById('receipt-name');
+            const receiptType = document.getElementById('receipt-type');
+            const receiptAccountName = document.getElementById('receipt-account-name');
+            const receiptAccountNumber = document.getElementById('receipt-account-number');
+            const receiptAmount = document.getElementById('receipt-amount');
+            const receiptNewBalance = document.getElementById('receipt-new-balance');
+            const printReceiptButton = document.getElementById('print-receipt-button');
+            const closeReceiptButton = document.getElementById('close-receipt-button');
+
+            const unlockView = document.getElementById('unlock-view');
+            const unlockForm = document.getElementById('unlock-form');
+            const unlockCodeInput = document.getElementById('unlock-code');
+            const unlockError = document.getElementById('unlock-error');
+            const closeUnlockButton = document.getElementById('close-unlock-button');
+
+            // --- App State ---
+            let state = { currentUser: null, accounts: null };
+            const USER_SECRET_CODE = '1234'; // Código genérico para desbloquear inversiones
+            const ADMIN_PASSWORD = 'admin123'; 
+
+            // --- Helper Functions ---
+            const formatCurrency = (amount) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(amount);
+            const showMessage = (message, type = 'success') => {
+                const color = type === 'success' ? 'green' : 'red';
+                messageArea.innerHTML = `<p class="text-${color}-600 bg-${color}-100 p-3 rounded-xl animate-pulse">${message}</p>`;
+                setTimeout(() => messageArea.innerHTML = '', 3000);
+            };
+
+            // --- Data Persistence ---
+            const saveState = () => {
+                if (state.currentUser) {
+                    localStorage.setItem(`bank_app_kid_v2_${state.currentUser}`, JSON.stringify(state.accounts));
+                }
+            };
+            
+            const saveUserBalance = (username, type, newAmount) => {
+                 const savedData = localStorage.getItem(`bank_app_kid_v2_${username}`);
+                 if(savedData) {
+                     const data = JSON.parse(savedData);
+                     if(type === 'checking') data.checking.balance = parseFloat(newAmount);
+                     if(type === 'savings') data.savings.balance = parseFloat(newAmount);
+                     if(type === 'investment') data.investment.balance = parseFloat(newAmount);
+                     localStorage.setItem(`bank_app_kid_v2_${username}`, JSON.stringify(data));
+                 }
+            };
+
+            const getInitialAccounts = (code) => ({
+                checking: { balance: 50.00, history: [], accountNumber: 'DG-' + Math.floor(1000 + Math.random() * 9000) },
+                savings: { balance: 200.00, history: [], accountNumber: 'TG-' + Math.floor(1000 + Math.random() * 9000) },
+                investment: { balance: 0, isLocked: false },
+                accessCode: code // Guardamos el código AJ...
+            });
+
+            const loadState = (username) => {
+                const savedData = localStorage.getItem(`bank_app_kid_v2_${username}`);
+                if (savedData) {
+                    state.accounts = JSON.parse(savedData);
+                } else {
+                    // Fallback para usuarios viejos o tests
+                    state.accounts = getInitialAccounts('AJ0000');
+                }
+                // Compatibilidad
+                if (!state.accounts.investment) state.accounts.investment = { balance: 0, isLocked: false };
+                state.currentUser = username;
+            };
+
+            // --- ADMIN LOGIC & GENERATORS ---
+            
+            // Generador de Códigos: AJ0101, AJ0202, etc.
+            const generateNextCode = () => {
+                let maxIndex = 0;
+                for(let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if(key.startsWith('bank_app_kid_v2_') && !key.includes('lastUser')) {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if(data.accessCode && data.accessCode.startsWith('AJ')) {
+                            const part = parseInt(data.accessCode.substring(2, 4)); // Tomamos los primeros 2 digitos numericos
+                            if(part > maxIndex) maxIndex = part;
+                        }
+                    }
+                }
+                const nextIndex = maxIndex + 1;
+                // Formato AJ + NN + NN (ej. 1 -> AJ0101)
+                const padded = nextIndex.toString().padStart(2, '0');
+                return `AJ${padded}${padded}`;
+            };
+
+            const getAllUsersData = () => {
+                const users = [];
+                for(let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if(key.startsWith('bank_app_kid_v2_') && !key.includes('lastUser')) {
+                        const username = key.replace('bank_app_kid_v2_', '');
+                        try {
+                            const data = JSON.parse(localStorage.getItem(key));
+                            if(!data.investment) data.investment = { balance: 0 };
+                            users.push({
+                                name: username,
+                                code: data.accessCode || 'N/A',
+                                checking: data.checking.balance,
+                                savings: data.savings.balance,
+                                investment: data.investment.balance,
+                            });
+                        } catch (e) {}
+                    }
+                }
+                return users.sort((a, b) => a.code.localeCompare(b.code));
+            };
+
+            const renderAdminTable = () => {
+                const users = getAllUsersData();
+                adminUsersTableBody.innerHTML = '';
+                
+                if(users.length === 0) {
+                    noUsersMsg.classList.remove('hidden');
+                    return;
+                }
+                noUsersMsg.classList.add('hidden');
+
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 border-b';
+                    row.innerHTML = `
+                        <td class="px-4 py-4 font-mono font-bold text-gray-600">${user.code}</td>
+                        <td class="px-4 py-4 font-medium text-gray-900">${user.name}</td>
+                        <td class="px-4 py-4 text-right"><input type="number" step="0.01" value="${user.checking.toFixed(2)}" class="input-editable text-blue-600" data-user="${user.name}" data-type="checking"></td>
+                        <td class="px-4 py-4 text-right"><input type="number" step="0.01" value="${user.savings.toFixed(2)}" class="input-editable text-green-600" data-user="${user.name}" data-type="savings"></td>
+                        <td class="px-4 py-4 text-right"><input type="number" step="0.01" value="${user.investment.toFixed(2)}" class="input-editable text-purple-600" data-user="${user.name}" data-type="investment"></td>
+                        <td class="px-4 py-4 text-center">
+                            <button class="save-row-btn bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-xs font-bold transition" data-user="${user.name}">Guardar</button>
+                        </td>
+                    `;
+                    adminUsersTableBody.appendChild(row);
+                });
+                
+                // Attach events to new buttons
+                document.querySelectorAll('.save-row-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const user = e.target.dataset.user;
+                        const row = e.target.closest('tr');
+                        const checking = row.querySelector('[data-type="checking"]').value;
+                        const savings = row.querySelector('[data-type="savings"]').value;
+                        const investment = row.querySelector('[data-type="investment"]').value;
+                        
+                        saveUserBalance(user, 'checking', checking);
+                        saveUserBalance(user, 'savings', savings);
+                        saveUserBalance(user, 'investment', investment);
+                        
+                        // Visual feedback
+                        const originalText = e.target.textContent;
+                        e.target.textContent = '¡Listo!';
+                        e.target.classList.add('bg-green-200', 'text-green-800');
+                        setTimeout(() => {
+                            e.target.textContent = originalText;
+                            e.target.classList.remove('bg-green-200', 'text-green-800');
+                        }, 1500);
+                    });
+                });
+            };
+
+            const exportToExcel = () => {
+                const users = getAllUsersData();
+                let csvContent = "\uFEFF"; 
+                csvContent += "Codigo Acceso,Nombre Usuario,Saldo Gastar,Saldo Ahorro,Saldo Inversion\n";
+                
+                users.forEach(user => {
+                    const row = [
+                        user.code,
+                        user.name,
+                        user.checking.toFixed(2),
+                        user.savings.toFixed(2),
+                        user.investment.toFixed(2)
+                    ].join(",");
+                    csvContent += row + "\n";
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", "tarjetas_usuarios_aprejunt.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const createNewUser = (e) => {
+                e.preventDefault();
+                const name = newUserNameInput.value.trim();
+                if(!name) return;
+
+                if(localStorage.getItem(`bank_app_kid_v2_${name}`)) {
+                    alert('Este usuario ya existe');
+                    return;
+                }
+
+                const code = generateNextCode();
+                const initialData = getInitialAccounts(code);
+                localStorage.setItem(`bank_app_kid_v2_${name}`, JSON.stringify(initialData));
+                
+                newUserNameInput.value = '';
+                newUserCodeInput.value = generateNextCode(); // Prepara el siguiente
+                renderAdminTable();
+            };
+
+            // --- UI Rendering (App Normal) ---
+            const renderUI = () => {
+                if (!state.accounts) return;
+                
+                checkingBalanceEl.textContent = formatCurrency(state.accounts.checking.balance);
+                savingsBalanceEl.textContent = formatCurrency(state.accounts.savings.balance);
+                investmentBalanceEl.textContent = formatCurrency(state.accounts.investment.balance);
+                welcomeMessage.textContent = `¡Hola, ${state.currentUser}!`;
+
+                if (state.accounts.investment.isLocked) {
+                    investmentStatusEl.textContent = '¡Cofre bloqueado!';
+                    investmentIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />`;
+                    investButton.disabled = true;
+                    investButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    investmentStatusEl.textContent = '¡Haz crecer tu dinero!';
+                    investmentIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />`;
+                    investButton.disabled = false;
+                    investButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                historyBody.innerHTML = '';
+                const allHistory = [...state.accounts.checking.history, ...state.accounts.savings.history];
+                allHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+                allHistory.slice(0, 10).forEach(tx => {
+                    const row = document.createElement('tr');
+                    row.className = 'bg-white border-b';
+                    const amountClass = tx.amount > 0 ? 'text-green-600' : 'text-red-600';
+                    const icon = tx.icon || (tx.amount > 0 ? '➕' : '➖');
+                    row.innerHTML = `<td class="px-6 py-4">${new Date(tx.date).toLocaleDateString('es-MX')}</td><td class="px-6 py-4 font-medium text-gray-900">${icon} ${tx.description}</td><td class="px-6 py-4 font-bold ${amountClass}">${formatCurrency(Math.abs(tx.amount))}</td><td class="px-6 py-4">${formatCurrency(tx.newBalance)}</td>`;
+                    historyBody.appendChild(row);
+                });
+            };
+            
+            const showReceipt = (details) => {
+                receiptDate.textContent = new Date().toLocaleString('es-MX');
+                receiptName.textContent = state.currentUser;
+                receiptType.textContent = details.type;
+                receiptAccountName.textContent = details.accountName;
+                receiptAccountNumber.textContent = details.accountNumber;
+                receiptAmount.textContent = formatCurrency(details.amount);
+                receiptNewBalance.textContent = formatCurrency(details.newBalance);
+                receiptView.classList.remove('hidden');
+            };
+
+            const addTransaction = (account, description, amount, icon) => {
+                const accountData = state.accounts[account];
+                accountData.balance += amount;
+                const tx = { date: new Date().toISOString(), description, amount, newBalance: accountData.balance, icon };
+                accountData.history.push(tx);
+                return tx;
+            };
+            
+            const handleAction = (e, handler) => {
+                e.preventDefault();
+                handler(e);
+            };
+
+            // --- Action Processors ---
+            const processDeposit = (e) => {
+                const account = document.getElementById('deposit-account').value;
+                const amount = parseFloat(document.getElementById('deposit-amount').value);
+                if (isNaN(amount) || amount <= 0) { showMessage('¡Uy! Pon una cantidad correcta.', 'error'); return; }
+                const accountName = account === 'checking' ? 'Dinero para Gastar' : 'Tesoro Guardado';
+                const tx = addTransaction(account, `Guardaste en tu ${accountName}`, amount, '📥');
+                saveState(); renderUI(); hideAllForms();
+                showReceipt({ type: 'Guardar Dinero', accountName, accountNumber: state.accounts[account].accountNumber, amount, newBalance: tx.newBalance });
+                e.target.reset();
+            };
+
+            const processWithdraw = (e) => {
+                const account = document.getElementById('withdraw-account').value;
+                const amount = parseFloat(document.getElementById('withdraw-amount').value);
+                if (isNaN(amount) || amount <= 0) { showMessage('¡Uy! Pon una cantidad correcta.', 'error'); return; }
+                if (state.accounts[account].balance < amount) { showMessage('¡Oh, no! No tienes suficiente dinero.', 'error'); return; }
+                const accountName = account === 'checking' ? 'Dinero para Gastar' : 'Tesoro Guardado';
+                const tx = addTransaction(account, `Sacaste de tu ${accountName}`, -amount, '📤');
+                saveState(); renderUI(); hideAllForms();
+                showReceipt({ type: 'Sacar Dinero', accountName, accountNumber: state.accounts[account].accountNumber, amount, newBalance: tx.newBalance });
+                e.target.reset();
+            };
+
+            const processTransfer = (e) => {
+                const fromAccount = document.getElementById('transfer-from').value;
+                const toAccount = document.getElementById('transfer-to').value;
+                const amount = parseFloat(document.getElementById('transfer-amount').value);
+                if (isNaN(amount) || amount <= 0) { showMessage('¡Uy! Pon una cantidad correcta.', 'error'); return; }
+                if (state.accounts[fromAccount].balance < amount) { showMessage('¡Oh, no! No tienes suficiente para mover.', 'error'); return; }
+                const fromName = fromAccount === 'checking' ? 'Dinero para Gastar' : 'Tesoro Guardado';
+                const toName = toAccount === 'checking' ? 'Dinero para Gastar' : 'Tesoro Guardado';
+                addTransaction(fromAccount, `Moviste a ${toName}`, -amount, '✈️');
+                addTransaction(toAccount, `Recibiste de ${fromName}`, amount, '✈️');
+                saveState(); renderUI(); hideAllForms();
+                showReceipt({ type: `Mover a ${toName}`, accountName: fromName, accountNumber: state.accounts[fromAccount].accountNumber, amount, newBalance: state.accounts[fromAccount].balance });
+                e.target.reset();
+            };
+
+            const processInvest = (e) => {
+                const amount = parseFloat(document.getElementById('invest-amount').value);
+                if (isNaN(amount) || amount <= 0) { showMessage('¡Uy! Pon una cantidad correcta.', 'error'); return; }
+                if (state.accounts.savings.balance < amount) { showMessage('No tienes suficiente en tu Tesoro para invertir.', 'error'); return; }
+                
+                addTransaction('savings', 'Inversión Mágica', -amount, '🔒');
+                state.accounts.investment.balance += amount;
+                state.accounts.investment.isLocked = true;
+                
+                saveState(); renderUI(); hideAllForms();
+                showReceipt({ type: 'Inversión Mágica', accountName: 'Tesoro Guardado', accountNumber: state.accounts.savings.accountNumber, amount, newBalance: state.accounts.savings.balance });
+                e.target.reset();
+            };
+
+            const processUnlock = (e) => {
+                e.preventDefault();
+                if (unlockCodeInput.value === USER_SECRET_CODE) {
+                    const principal = state.accounts.investment.balance;
+                    const interest = principal * 0.12;
+                    const totalReturn = principal + interest;
+
+                    addTransaction('savings', 'Retorno de Inversión Mágica', totalReturn, '✨');
+                    
+                    state.accounts.investment.balance = 0;
+                    state.accounts.investment.isLocked = false;
+                    
+                    saveState();
+                    renderUI();
+                    unlockView.classList.add('hidden');
+                    unlockForm.reset();
+                    showMessage(`¡Felicidades! ¡Ganaste ${formatCurrency(interest)}!`, 'success');
+                } else {
+                    unlockError.textContent = '¡Código incorrecto! Intenta de nuevo.';
+                    unlockForm.reset();
+                }
+            };
+            
+            const showForm = (formToShow) => {
+                allForms.forEach(form => form.classList.add('hidden'));
+                formToShow.classList.remove('hidden');
+            };
+            const hideAllForms = () => allForms.forEach(form => { form.classList.add('hidden'); form.reset(); });
+
+            // --- Event Listeners ---
+            actionsPanel.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button && button.dataset.action) {
+                    const action = button.dataset.action;
+                    if (action === 'deposit') showForm(depositForm);
+                    if (action === 'withdraw') showForm(withdrawForm);
+                    if (action === 'transfer') showForm(transferForm);
+                    if (action === 'invest') showForm(investForm);
+                }
+            });
+
+            investmentCard.addEventListener('click', () => {
+                if (state.accounts.investment.isLocked) {
+                    unlockError.textContent = '';
+                    unlockView.classList.remove('hidden');
+                    unlockCodeInput.focus();
+                } else {
+                    showMessage('Primero necesitas invertir para poder desbloquear el cofre.', 'error');
+                }
+            });
+
+            document.querySelectorAll('.cancel-action').forEach(button => button.addEventListener('click', hideAllForms));
+            
+            const transferFromSelect = document.getElementById('transfer-from');
+            const transferToSelect = document.getElementById('transfer-to');
+            transferFromSelect.addEventListener('change', () => {
+                transferToSelect.value = transferFromSelect.value === 'checking' ? 'savings' : 'checking';
+            });
+
+            const login = (username) => {
+                loadState(username);
+                loginView.classList.add('hidden');
+                appView.classList.remove('hidden');
+                renderUI();
+            };
+            const logout = () => {
+                state.currentUser = null; state.accounts = null;
+                localStorage.removeItem('bank_app_kid_v2_lastUser');
+                loginView.classList.remove('hidden');
+                appView.classList.add('hidden');
+                loginInput.value = '';
+                loginPassword.value = '';
+                passwordContainer.classList.add('hidden');
+            };
+
+            // Admin Events
+            adminBtn.addEventListener('click', () => {
+                loginView.classList.add('hidden');
+                adminAuthView.classList.remove('hidden');
+                adminPasswordInput.focus();
+            });
+
+            adminCancelBtn.addEventListener('click', () => {
+                adminAuthView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+                adminPasswordInput.value = '';
+                adminError.textContent = '';
+            });
+
+            adminLoginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if(adminPasswordInput.value === ADMIN_PASSWORD) {
+                    adminAuthView.classList.add('hidden');
+                    adminDashboardView.classList.remove('hidden');
+                    newUserCodeInput.value = generateNextCode();
+                    renderAdminTable();
+                    adminPasswordInput.value = '';
+                    adminError.textContent = '';
+                } else {
+                    adminError.textContent = 'Contraseña incorrecta';
+                }
+            });
+
+            adminLogoutBtn.addEventListener('click', () => {
+                adminDashboardView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            });
+
+            exportExcelBtn.addEventListener('click', exportToExcel);
+            adminAddUserForm.addEventListener('submit', createNewUser);
+
+            // Main Login Event (Handle Scan vs Type)
+            loginInput.addEventListener('input', (e) => {
+                // Detectar si parece un escaneo (formato AJxxxx)
+                const val = e.target.value.trim().toUpperCase();
+                if(val.length === 6 && val.startsWith('AJ')) {
+                    // Es un codigo de barras! Intentar login automatico
+                    // Buscar usuario con este codigo
+                    let foundUser = null;
+                    for(let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if(key.startsWith('bank_app_kid_v2_') && !key.includes('lastUser')) {
+                             const data = JSON.parse(localStorage.getItem(key));
+                             if(data.accessCode === val) {
+                                 foundUser = key.replace('bank_app_kid_v2_', '');
+                                 break;
+                             }
+                        }
+                    }
+                    
+                    if(foundUser) {
+                        localStorage.setItem('bank_app_kid_v2_lastUser', foundUser);
+                        login(foundUser);
+                    } else {
+                        loginError.textContent = '¡Tarjeta no encontrada!';
+                    }
+                }
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const inputVal = loginInput.value.trim();
+                
+                // Intento de login manual por Nombre
+                if (inputVal) {
+                    // Verificamos si existe el usuario por nombre
+                    if(localStorage.getItem(`bank_app_kid_v2_${inputVal}`)) {
+                         // Login exitoso
+                         localStorage.setItem('bank_app_kid_v2_lastUser', inputVal);
+                         login(inputVal);
+                    } else {
+                        // Quizas intentaron escribir el codigo AJ manualmente y darle enter
+                         let foundUser = null;
+                        for(let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i);
+                            if(key.startsWith('bank_app_kid_v2_') && !key.includes('lastUser')) {
+                                const data = JSON.parse(localStorage.getItem(key));
+                                if(data.accessCode === inputVal.toUpperCase()) {
+                                    foundUser = key.replace('bank_app_kid_v2_', '');
+                                    break;
+                                }
+                            }
+                        }
+                        if(foundUser) {
+                            localStorage.setItem('bank_app_kid_v2_lastUser', foundUser);
+                            login(foundUser);
+                        } else {
+                            loginError.textContent = 'Usuario no encontrado. ¿Escaneaste bien?';
+                        }
+                    }
+                }
+            });
+
+            logoutButton.addEventListener('click', logout);
+            depositForm.addEventListener('submit', (e) => handleAction(e, processDeposit));
+            withdrawForm.addEventListener('submit', (e) => handleAction(e, processWithdraw));
+            transferForm.addEventListener('submit', (e) => handleAction(e, processTransfer));
+            investForm.addEventListener('submit', (e) => handleAction(e, processInvest));
+            unlockForm.addEventListener('submit', processUnlock);
+            printReceiptButton.addEventListener('click', () => window.print());
+            closeReceiptButton.addEventListener('click', () => receiptView.classList.add('hidden'));
+            closeUnlockButton.addEventListener('click', () => unlockView.classList.add('hidden'));
+
+            // Auto-focus para scanners
+            if(!loginView.classList.contains('hidden')) {
+                loginInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
